@@ -1004,7 +1004,7 @@ public class DayTwo {
 			+ "16-20 j: vjkjjcjjrjjmtnbjjjnj";
 	
 	public static boolean testPolicy(String pPolicy, String pPassword) {
-		System.out.print("testing " + pPolicy + " for " + pPassword + "...");
+		System.out.print("testing old " + pPolicy + " for " + pPassword + "...");
 		String policy[] = pPolicy.split(" ");
 		String q[] = policy[0].split("-");
 
@@ -1017,15 +1017,34 @@ public class DayTwo {
 		return false;
 	}
 	
+	public static boolean testNewPolicy(String pPolicy, String pPassword) {
+		System.out.print("testing new " + pPolicy + " for " + pPassword + "...");
+		String policy[] = pPolicy.split(" ");
+		String q[] = policy[0].split("-");
+
+		if (pPassword.charAt(Integer.valueOf(q[0]) - 1) == policy[1].charAt(0) ^ 
+				pPassword.charAt(Integer.valueOf(q[1]) - 1) == policy[1].charAt(0)) { 
+			System.out.println("ok");
+			return true;
+		}
+		System.out.println("not ok");
+		return false;
+	}
+	
 	public static void main(String[] args) {
 		int count = 0;
+		int newCount = 0;
 		for (String line : INPUT.split("\n")) {
 			String l[] = line.split(": ");
 			if (testPolicy(l[0], l[1])) {
 				count++;
 			}
+			if (testNewPolicy(l[0], l[1])) {
+				newCount++;
+			}
 		}
 		System.out.println("" + count + " valid passwords were found.");
+		System.out.println("" + newCount + " valid passwords were found (new policy).");
 	}
 
 }
