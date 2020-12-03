@@ -337,13 +337,58 @@ public class DayThree {
 	
 	public static void main(String[] args) {
 		int count = 0;
+		long multiply = 1;
 		// 
+		for (int row = 1; row < MAP.length; row++) {
+			if (testTree(row, row)) {
+				count++;
+			}
+		}
+		System.out.println("" + count + " trees encountered.");
+		multiply *= count;
+		count = 0;
+		
 		for (int row = 1; row < MAP.length; row++) {
 			if (testTree(row, row * 3)) {
 				count++;
 			}
 		}
+		
 		System.out.println("" + count + " trees encountered.");
+		multiply *= count;
+		count = 0;
+		
+		for (int row = 1; row < MAP.length; row++) {
+			if (testTree(row, row * 5)) {
+				count++;
+			}
+		}
+		
+		System.out.println("" + count + " trees encountered.");
+		multiply *= count;
+		count = 0;
+		
+		for (int row = 1; row < MAP.length; row++) {
+			if (testTree(row, row * 7)) {
+				count++;
+			}
+		}
+		
+		System.out.println("" + count + " trees encountered.");
+		multiply *= count;
+		count = 0;
+		
+		for (int row = 1; row < MAP.length; row += 2) {
+			if (testTree(row, row)) {
+				count++;
+			}
+		}
+		
+		System.out.println("" + count + " trees encountered.");
+		multiply *= count;
+
+		System.out.println("all counts multiplied: " + multiply);
+
 	}
 
 }
