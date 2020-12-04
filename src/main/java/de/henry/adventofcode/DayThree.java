@@ -1,5 +1,12 @@
 package de.henry.adventofcode;
 
+/**
+ * Solves the "Count-Trees-On-My-Way"-Riddle of December 3rd 2020. 
+ * https://adventofcode.com/2020.
+ * 
+ * @author henry
+ *
+ */
 public class DayThree {
 	
 	private static final String INPUT = "...#...#..#....#..#...#..##..#.\n"

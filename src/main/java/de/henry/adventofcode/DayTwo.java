@@ -1,5 +1,12 @@
 package de.henry.adventofcode;
 
+/**
+ * Solves the "Valid-Passwords"-Riddle of December 2nd 2020. 
+ * https://adventofcode.com/2020.
+ * 
+ * @author henry
+ *
+ */
 public class DayTwo {
 	
 	private static final String INPUT = "14-15 v: vdvvvvvsvvvvvfpv\n"

@@ -3,7 +3,11 @@ package de.henry.adventofcode;
 import java.util.Arrays;
 
 /**
- * Day One of https://adventofcode.com/.
+ * Solves the "Find 2020-summands in a given list"-Riddle of December 1st 2020. 
+ * https://adventofcode.com/2020.
+ * 
+ * @author henry
+ *
  */
 public final class DayOne {
     private static final int[] INPUT = {

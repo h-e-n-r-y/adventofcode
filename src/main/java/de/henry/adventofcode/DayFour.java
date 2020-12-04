@@ -1,7 +1,15 @@
 package de.henry.adventofcode;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * Solves the "Valid-Passports"-Riddle of December 4th 2020.
+ * https://adventofcode.com/2020
+ * 
+ * @author henry
+ *
+ */
 public class DayFour {
 	
 	private static final String INPUT = "hgt:176cm\n"
@@ -1006,28 +1014,30 @@ public class DayFour {
 		pid,
 		cid
 	}
-	private static boolean contains(String[] pArray, REQUIRED_FIELDS pValue) {
-		return Arrays.stream(pArray).anyMatch(pValue.name()::equals);
-	}
-	
-	private static String[] extractFieldNames(String[] pFields) {
-		String[] fieldNames = new String[pFields.length];
+
+	private static Map<REQUIRED_FIELDS, String> extractFields(String[] pFields) {
+		Map<REQUIRED_FIELDS, String> fields = new HashMap<>();
 		for (int i=0; i<pFields.length; i++) {
-			fieldNames[i] = pFields[i].split(":")[0];
+			fields.put(REQUIRED_FIELDS.valueOf(pFields[i].split(":")[0]), pFields[i].split(":")[1]);
 		}
-		return fieldNames;
+		return fields;
 	}
 	public static boolean testPassport(String pPassport) {
-		String[] fieldNames = extractFieldNames(pPassport.split("\\s+"));
-		System.out.print(Arrays.toString(fieldNames) + ": ");
+		Map<REQUIRED_FIELDS, String> fields = extractFields(pPassport.split("\\s+"));
+		System.out.print(fields + ": ");
 		boolean northpole = false;
 		for (REQUIRED_FIELDS f : REQUIRED_FIELDS.values()) {
-			if (!contains(fieldNames, f)) {
+			if (!fields.containsKey(f)) {
 				if (f != REQUIRED_FIELDS.cid) {
 					System.out.println("invalid. " + f + " missing.");
 					return false;
 				} else {
 					northpole = true;
+				}
+			} else {
+				if (!fieldIsValid(f, fields.get(f))) {
+					System.out.println("invalid. " + f + " invalid value: " + fields.get(f));
+					return false;
 				}
 			}
 		}
@@ -1035,6 +1045,49 @@ public class DayFour {
 		return true;
 	}
 	
+	
+	private static boolean fieldIsValid(REQUIRED_FIELDS f, String pValue) {
+		switch(f) {
+		case byr: return testYearRange(pValue, 1920, 2002);
+		case iyr: return testYearRange(pValue, 2010, 2020);
+		case eyr: return testYearRange(pValue, 2020, 2030);
+		case hgt: return testHeight(pValue);
+		case hcl: return testHairColor(pValue);
+		case ecl: return testEyeColor(pValue);
+		case pid: return testPid(pValue);
+		case cid: return true;
+		}
+		return false;
+	}
+	
+	private static boolean testHeight(String pValue) {
+		try {
+			if (pValue.matches("\\d+cm")) {
+				int h = Integer.parseInt(pValue.substring(0, 3));
+				return h >= 150 && h <= 193;
+			}
+			if (pValue.matches("\\d+in")) {
+				int h = Integer.parseInt(pValue.substring(0, 2));
+				return h >= 59 && h <= 76;
+			}
+		} catch (NumberFormatException nfe) {
+			
+		}
+		return false;
+	}
+	private static boolean testHairColor(String pValue) {
+		return pValue.matches("#[0-9a-f]{6}");
+	}
+	private static boolean testPid(String pValue) {
+		return pValue.matches("[0-9]{9}");
+	}
+	private static boolean testEyeColor(String pValue) {
+		return pValue.matches("(amb|blu|brn|gry|grn|hzl|oth){1}");
+	}
+	private static boolean testYearRange(String pValue, int pFrom, int pTo) {
+		int y = Integer.parseInt(pValue);
+		return y >= pFrom && y <= pTo;
+	}
 	
 	public static void main(String[] args) {
 		int count = 0;
