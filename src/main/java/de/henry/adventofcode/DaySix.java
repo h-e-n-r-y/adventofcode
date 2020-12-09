@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Solves the "customs declaration forms"-Riddle of December 6th 2020.
@@ -2066,30 +2067,35 @@ public class DaySix {
 	static int count(String pGroup) {
 		String[] answers = pGroup.split("[^a-z]*");
 		Arrays.sort(answers);
-		System.out.println(Arrays.toString(answers));
+		// System.out.println(Arrays.toString(answers));
 		Set<Object> uniq = new HashSet<>();
 		Collections.addAll(uniq, Arrays.stream(answers).filter(a -> a.matches("[a-z]")).toArray());
 		return uniq.size();
 	}
 	
 	static int count2(String pGroup) {
-		String[] answers = pGroup.split("[^a-z]*");
-		Arrays.sort(answers);
-		System.out.println(Arrays.toString(answers));
-		Set<Object> uniq = new HashSet<>();
-		Collections.addAll(uniq, Arrays.stream(answers).filter(a -> a.matches("[a-z]")).toArray());
-		return uniq.size();
+		String[] answers = pGroup.split("\n");
+		Set<String> commonAnswers = new HashSet<>(Arrays.asList(answers[0].split("")));
+		
+		for (String a : answers) {
+			commonAnswers.retainAll(new HashSet<>(Arrays.asList(a.split(""))));
+		}
+		System.out.println(commonAnswers.toString() + " count2: " + commonAnswers.size());
+		return commonAnswers.size();
 	}
 	
 	static Set<Integer> seats = new HashSet<>();
 	public static void main(String[] args) {
 		int count = 0;
+		int count2 = 0;
 		// 
 		for (int row = 0; row < GROUPS.length; row++) {
 			System.out.println(GROUPS[row]);
 			count += count(GROUPS[row]);
+			count2 += count2(GROUPS[row]);
 		}
 		System.out.println("" + count + " is the count");
+		System.out.println("" + count2 + " is the new count");
 		
 
 	}
