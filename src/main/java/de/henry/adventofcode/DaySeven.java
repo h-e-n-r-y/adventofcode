@@ -1,6 +1,8 @@
 package de.henry.adventofcode;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -624,13 +626,15 @@ public class DaySeven {
 	}
 		
 	static Set<String> containers = new HashSet<>();
+
+	static Map<String, Set<Entry>> cb;
 	public static void main(String[] args) {
 
-		processRules(BAG, containers);
+		findDirectContainers(BAG, containers);
 		do {
 			Set<String> c = new HashSet<>(containers);
 			for (String container : containers) {
-				processRules(container, c);
+				findDirectContainers(container, c);
 			}
 			if (c.size() > containers.size()) {
 				containers = c;
@@ -639,14 +643,122 @@ public class DaySeven {
 			}
 		} while (true);
 		System.out.println(containers.size() + " bags can contain " + BAG + ": " + containers.toString());
+
+		cb = buildBagsMap(RULES);
+		Map<String, Integer> subBags = findContainedBags(BAG, 0);
+		calcCount(subBags);
+		
+	}
+
+	static int calcCount(Map<String, Integer> subBags) {
+		int count = 0;
+		for (Map.Entry<String, Integer> e : subBags.entrySet()) {
+			System.out.println(e.getKey() + ": " + e.getValue());
+			count += e.getValue();
+		}
+		System.out.println("total: " + count);
+		return count;
 	}
 	
-	private static void processRules(String pBag, Set<String> pContainers) {
+	private static void findDirectContainers(String pBag, Set<String> pContainers) {
 		for (String rule : RULES) {
 			String container = contains(rule, pBag);
 			if (container != null) {
 				pContainers.add(container);
 			}
+		}
+	}
+
+	static Map<String, Integer> findContainedBags(String pBag, int level) {
+		Map<String, Integer> contained = new HashMap<>();
+		Set<Entry> subBags = cb.get(pBag);
+		if (subBags == null) {
+			return contained;
+		}
+		indent(level);
+		System.out.println("contains: " + subBags.toString());
+		for (Entry s : subBags) {
+			indent(level);
+			System.out.println(s);
+			if (contained.containsKey(s.bag)) {
+				contained.put(s.bag, contained.get(s.bag) + s.count);
+			} else {
+				contained.put(s.bag, s.count);
+			}
+			Map<String, Integer> subSubBags = findContainedBags(s.bag, level + 1);
+			indent(level + 1);
+			System.out.println(subSubBags.toString());
+			merge(contained, subSubBags, s.count);
+		}
+		indent(level);
+		System.out.println(" --> " + contained.toString());
+		return contained;
+	}
+
+	private static void indent(int level) {
+		for (int i = 0; i < level; i++) {
+			System.out.print(" ");
+		}
+	}
+
+	
+	private static void merge(Map<String, Integer> contained, Map<String, Integer> subSubBags, int count) {
+		for (Map.Entry<String, Integer> e : subSubBags.entrySet()) {
+			if (contained.containsKey(e.getKey())) {
+				contained.put(e.getKey(), contained.get(e.getKey()) + e.getValue() * count);
+			} else {
+				contained.put(e.getKey(), e.getValue() * count);
+			}
+		}
+	}
+
+	static Map<String, Set<Entry>> buildBagsMap(String[] pRules) {
+		Map<String, Set<Entry>> containers = new HashMap<>();
+		for (String rule : pRules) {
+			Pattern p = Pattern.compile("(.*) bags contain (.*)");
+			Matcher matcher = p.matcher(rule);
+			if (matcher.find()) {
+				String c = matcher.group(1);
+				String[] bags = matcher.group(2).split(", ");
+				Set<Entry> ib = new HashSet<>();
+				for (String bag : bags) {
+					Pattern p2 = Pattern.compile("(\\d+) (.*) bag");
+					Matcher m2 = p2.matcher(bag);
+					if (m2.find()) {
+						ib.add(new Entry(Integer.parseInt(m2.group(1)), m2.group(2)));
+					}
+				}
+				containers.put(c, ib);
+			}
+		}
+		return containers;
+	}
+	
+	static class Entry {
+		Integer count;
+		String bag;
+		
+		Entry(Integer i, String b) {
+			count = i;
+			bag = b;
+		}
+		
+		@Override
+		public int hashCode() {
+			return bag.hashCode();
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Entry) {
+				return bag.equals(((Entry) obj).bag) && count.equals(((Entry) obj).count);
+			}
+			return false;
+		}
+		
+		@Override
+		public String toString() {
+			return bag + ":" + count;
 		}
 	}
 
