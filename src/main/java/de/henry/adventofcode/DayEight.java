@@ -667,8 +667,10 @@ public class DayEight {
 			+ "acc +28\n"
 			+ "jmp +1";
 
-	private static final String[] INSTRUCTIONS = INPUT.split("\n");
-	private static final boolean[] x = new boolean[INSTRUCTIONS.length];
+	private static final String[] PROGRAM = INPUT.split("\n");
+	private static final String[] INSTRUCTIONS = new String[PROGRAM.length];
+	private static final int[] ARGUMENTS = new int[PROGRAM.length];
+	private static boolean[] x;
 	
 	static int accu = 0;
 	static int executeSingleInstruction(int pc) throws InfiniteLoopException, IllegalInstructionException {
@@ -677,29 +679,63 @@ public class DayEight {
 			throw new InfiniteLoopException();
 		}
 		x[pc] = true;
-		String[] instr = INSTRUCTIONS[pc].split(" ");
-		switch (instr[0]) {
-		case "acc": accu += Integer.valueOf(instr[1]); return pc + 1;
+		switch (INSTRUCTIONS[pc]) {
+		case "acc": accu += ARGUMENTS[pc]; return pc + 1;
 		case "nop": return pc + 1;
-		case "jmp": return pc += Integer.valueOf(instr[1]);
+		case "jmp": return pc += ARGUMENTS[pc];
 			default: throw new IllegalInstructionException();
 		}
 	}
 	
 	public static void main(String[] args) {
+		load();
+		int patch = 0;
+		while (true) {
+			x = new boolean[INSTRUCTIONS.length]; // reset loop detector
+			try {
+				run();
+			} catch (InfiniteLoopException e) {
+				System.out.println("Infinite loop detected. Stopping...");
+				flipNopJmp(patch);
+				if (patch > 0) {
+					flipNopJmp(patch - 1);
+				}
+				patch++;
+				// try again...
+				continue;
+			}
+			break;
+		}
+		
+	}
+
+	private static void flipNopJmp(int patch) {
+		if (INSTRUCTIONS[patch].equals("nop")) {
+			INSTRUCTIONS[patch] = "jmp";
+		} else if (INSTRUCTIONS[patch].equals("jmp")) {
+			INSTRUCTIONS[patch] = "nop";
+		}
+	}
+
+	private static void load() {
+		for (int i=0; i<PROGRAM.length; i++) {
+			String line[] = PROGRAM[i].split(" ");
+			INSTRUCTIONS[i] = line[0];
+			ARGUMENTS[i] = Integer.parseInt(line[1]);
+		}
+	}
+	
+	private static void run() throws InfiniteLoopException {
 		try {
-			int pc = 0;
+			int pc = 0; // reset program counter
+			accu = 0; //reset accumulator
 			while (pc < INSTRUCTIONS.length) {
 				pc = executeSingleInstruction(pc);
 			}
-		} catch (InfiniteLoopException e) {
-			System.out.println("Infinite loop detected. Stopping...");
 		} catch (IllegalInstructionException e) {
 			e.printStackTrace();
 		}
 		System.out.println("Accumulator value: " + accu);
-		
-		
 	}
 
 
