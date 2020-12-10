@@ -1,17 +1,7 @@
 package de.henry.adventofcode;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import de.henry.adventofcode.DayEight.IllegalInstructionException;
-import de.henry.adventofcode.DayEight.InfiniteLoopException;
-
 /**
- * Solves the "infinit-loop-code"-Riddle of December 8th 2020.
+ * Solves the "infinite-loop-code"-Riddle of December 8th 2020.
  * https://adventofcode.com/2020
  * 
  * @author henry
@@ -673,6 +663,17 @@ public class DayEight {
 	private static boolean[] x;
 	
 	static int accu = 0;
+	
+	
+	/**
+	 * Executes the instruction on the pc position.
+	 * 
+	 * @param pc the current program counter.
+	 * @return the new program counter.
+	 * 
+	 * @throws InfiniteLoopException when this pc was already executed.
+	 * @throws IllegalInstructionException on unknown instruction code.
+	 */
 	static int executeSingleInstruction(int pc) throws InfiniteLoopException, IllegalInstructionException {
 		if (x[pc]) {
 			// infinite loop detected
@@ -709,6 +710,11 @@ public class DayEight {
 		
 	}
 
+	/**
+	 * Flip nop and jmp instruction on pc: patch.
+	 * 
+	 * @param patch the position of flip operation.
+	 */
 	private static void flipNopJmp(int patch) {
 		if (INSTRUCTIONS[patch].equals("nop")) {
 			INSTRUCTIONS[patch] = "jmp";
@@ -717,6 +723,9 @@ public class DayEight {
 		}
 	}
 
+	/**
+	 * Load the Program.
+	 */
 	private static void load() {
 		for (int i=0; i<PROGRAM.length; i++) {
 			String line[] = PROGRAM[i].split(" ");
@@ -725,6 +734,12 @@ public class DayEight {
 		}
 	}
 	
+	/**
+	 * Execute the program.
+	 * resets the accumulator.
+	 * 
+	 * @throws InfiniteLoopException when an infinite loop was detected.
+	 */
 	private static void run() throws InfiniteLoopException {
 		try {
 			int pc = 0; // reset program counter
