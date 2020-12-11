@@ -119,15 +119,17 @@ public class DayTen {
 
 	static Logger logger = LoggerFactory.getLogger(DayTen.class);
 			
-	static int[] numbers;
-	static {
-		String[] n = INPUT.split("\n");
-		numbers = new int[n.length];
+	static int[] numbers = load(INPUT);
+	
+	static int[] load(String pInput) {
+		String[] n = pInput.split("\n");
+		int[] nmbrs = new int[n.length];
 		int i=0;
 		for (String s : n) {
-			numbers[i++] = Integer.parseInt(s);
+			nmbrs[i++] = Integer.parseInt(s);
 		}
-		Arrays.sort(numbers);
+		Arrays.sort(nmbrs);
+		return nmbrs;
 	}
 	
 	static int joltDiffFactorAllAdapters(int[] adapters) {
@@ -142,9 +144,31 @@ public class DayTen {
 		}
 		return one * three;
 	}
+
+	static final int factor[] = {1, 1, 2, 4, 7};
+	static long joltDiffAdaptersCombinations(int[] adapters) {
+		int[] delta = new int[adapters.length];
+		delta[0] = adapters[0];
+		for (int i=1; i<adapters.length; i++) {
+			delta[i] = adapters[i] - adapters[i-1];
+		}
+			
+		long combinations = 1;
+		int onecount = 0;
+		for (int i=0; i<delta.length; i++) {
+			if (delta[i] == 3) {
+				combinations *= factor[onecount];
+				onecount = 0;
+			} else {
+				onecount++;
+			}
+		}
+		return combinations * factor[onecount];
+	}
 	
 	public static void main(String[] args) {
 		logger.info("number of 1-jolt differences multiplied by the number of 3-jolt differences is {}", joltDiffFactorAllAdapters(numbers));
+		logger.info("the total number of distinct ways you can arrange the adapters to connect the charging outlet is {}", joltDiffAdaptersCombinations(numbers));
 	}
 
 }

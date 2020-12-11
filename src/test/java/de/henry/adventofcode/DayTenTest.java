@@ -1,14 +1,12 @@
 package de.henry.adventofcode;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.Arrays;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
 class DayTenTest {
 
-	static String INPUT ="28\n"
+	static String INPUT = "28\n"
 			+ "33\n"
 			+ "18\n"
 			+ "42\n"
@@ -39,20 +37,66 @@ class DayTenTest {
 			+ "34\n"
 			+ "10\n"
 			+ "3";
-	static int[] numbers;
-	static {
-		String[] n = INPUT.split("\n");
-		numbers = new int[n.length];
-		int i=0;
-		for (String s : n) {
-			numbers[i++] = Integer.parseInt(s);
-		}
-		Arrays.sort(numbers);
-	}
-	
+
+	static String INPUT2 = "16\n"
+			+ "10\n"
+			+ "15\n"
+			+ "5\n"
+			+ "1\n"
+			+ "11\n"
+			+ "7\n"
+			+ "19\n"
+			+ "6\n"
+			+ "12\n"
+			+ "4";
+
 	@Test
-	void testJoltDifFactor() {
-		assertEquals(220, DayTen.joltDiffFactorAllAdapters(numbers));
+	void testJoltDiffFactorAllAdapters() {
+		assertEquals(220, DayTen.joltDiffFactorAllAdapters(DayTen.load(INPUT)));
 	}
+
+	/**
+	 * 1 4 5 6 7 10 11 12 15 16 19
+	 * 
+	 *  3 1 1 1 3  1  1  3  1  3
+	 */
+	@Test
+	void testJoltDiffAdapterCombinations() {
+		assertEquals(8L, DayTen.joltDiffAdaptersCombinations(DayTen.load(INPUT2)));
+	}
+
+	static String INPUT3 = "1\n"
+			+ "4\n"
+			+ "5\n";
+
+	/**
+	 * 1 4 5
+	 * 
+	 * (0) 1 4 5 (8)
+	 * 
+	 *  1 3 1 
+	 */
+	@Test
+	void testJoltDiffAdapterCombinations2() {
+		assertEquals(1L, DayTen.joltDiffAdaptersCombinations(DayTen.load(INPUT3)));
+	}
+
+	static String INPUT4 = "1\n"
+			+ "4\n"
+			+ "5\n"
+			+ "6\n";
+	/**
+	 * 1 4 5 6
+	 * 
+	 * (0) 1 4 5 6 (9)
+	 * (0) 1 4 6 (9)
+	 * 
+	 *  1 3 1 1
+	 */
+	@Test
+	void testJoltDiffAdapterCombinations3() {
+		assertEquals(2L, DayTen.joltDiffAdaptersCombinations(DayTen.load(INPUT4)));
+	}
+
 
 }
