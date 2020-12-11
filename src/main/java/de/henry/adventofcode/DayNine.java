@@ -1055,12 +1055,34 @@ public class DayNine {
 	}
 	
 	public static void main(String[] args) {
+		long wrongNumber = 0;
 		for (int i=25; i<numbers.length; i++ ) {
 			if (!check(i)) {
-				System.out.println("wrong number is " + numbers[i]);
+				wrongNumber = numbers[i];
+				logger.info("wrong number is {}", wrongNumber);
 				break;
 			}
 		}
+		for (int i=0; i<numbers.length; i++ ) {
+			int d = checkSum(i, wrongNumber);
+			if (d > 0) {
+				logger.info("contiguous range: {}:{} sum: {}", numbers[i], numbers[i+d], numbers[i] + numbers[i+d]);
+				break;
+			}
+		}
+	}
+
+	private static int checkSum(int pos, long wrongNumber) {
+		long sum = numbers[pos];
+		int d = 1;
+		while (sum < wrongNumber) {
+			sum += numbers[pos + d];
+			if (sum == wrongNumber) {
+				return d;
+			}
+			d++;
+		}
+		return 0;
 	}
 
 
