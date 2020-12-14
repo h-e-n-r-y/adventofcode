@@ -161,15 +161,19 @@ public class DayEleven {
 	}
 	
 	static Boolean adjacentSeat(int col, int row, DIR pDir, Boolean[][] pMap) {
+		return adjacentSeat(col, row, pDir, pMap, 1);
+	}
+
+	static Boolean adjacentSeat(int col, int row, DIR pDir, Boolean[][] pMap, int pDist) {
 		switch(pDir) {
-		case N: row--; break;
-		case NE: row--; col++; break;
-		case E:  col++; break;
-		case SE: row++; col++; break;
-		case S: row++; break;
-		case SW: row++; col--; break;
-		case W: col--; break;
-		case NW: row--; col--; break;
+		case N: row-=pDist; break;
+		case NE: row-=pDist; col+=pDist; break;
+		case E:  col+=pDist; break;
+		case SE: row+=pDist; col+=pDist; break;
+		case S: row+=pDist; break;
+		case SW: row+=pDist; col-=pDist; break;
+		case W: col-=pDist; break;
+		case NW: row-=pDist; col-=pDist; break;
 		}
 		if(col < 0 || col >= cols) {
 			return null;
@@ -178,6 +182,20 @@ public class DayEleven {
 			return null;
 		}
 		return pMap[row][col];
+	}
+	
+	static Boolean adjacentSeatNew(int col, int row, DIR pDir, Boolean[][] pMap) {
+		int dist = 1;
+		Boolean adjacentSeat = null;
+		while (dist < cols && dist < rows) {
+			adjacentSeat = adjacentSeat(col, row, pDir, pMap, dist);
+			if (null == adjacentSeat) {
+				dist++;
+			} else {
+				break;
+			}
+		}
+		return adjacentSeat;
 	}
 	
 	/**
@@ -216,6 +234,37 @@ public class DayEleven {
 	}
 
 	
+	static boolean applySeatingRulesNew(Boolean[][] waitingArea) {
+		boolean changed = false;
+		Boolean [][] savedMap = Arrays.stream(waitingArea).map(Boolean[]::clone).toArray(Boolean[][]::new);
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < cols; col++) {
+				int occ = 0;
+				Boolean noOccupied = true;
+				for (DIR d : DIR.values()) {
+					Boolean adjacentSeat = adjacentSeatNew(col, row, d, savedMap);
+					noOccupied = noOccupied && !(adjacentSeat != null && adjacentSeat);
+					if (adjacentSeat != null && adjacentSeat) {
+						occ++;
+					}
+				}
+				if (savedMap[row][col] != null) {
+					if (noOccupied && !savedMap[row][col]) {
+						waitingArea[row][col] = true;
+						changed = true;
+					}
+					if (occ >=5 && savedMap[row][col]) {
+						waitingArea[row][col] = false;
+						changed = true;
+					}
+				}
+			}			
+		}
+		
+		return changed;
+	}
+
+	
 	
 	public static void main(String[] args) {
 		logger.debug("\n{}\n", printMap(map));
@@ -224,6 +273,16 @@ public class DayEleven {
 		}
 		
 		logger.debug("occupied seats: {}", countOccoupied(map));
+		
+		
+		map = load(INPUT);
+		
+		while (applySeatingRulesNew(map)) {
+			logger.debug("\n{}\n", printMap(map));
+		}
+		
+		logger.debug("occupied seats: {}", countOccoupied(map));
+		
 		
 	}
 

@@ -55,4 +55,73 @@ class DayElevenTest {
 
 	}
 
+	@Test
+	void testApplySeatingRulesNew() {
+		Boolean[][] map = DayEleven.load(input1);
+		log.debug("\n{}\n\n", DayEleven.printMap(map));
+
+		DayEleven.applySeatingRulesNew(map);
+		assertEquals("#.##.##.##\n"
+				+ "#######.##\n"
+				+ "#.#.#..#..\n"
+				+ "####.##.##\n"
+				+ "#.##.##.##\n"
+				+ "#.#####.##\n"
+				+ "..#.#.....\n"
+				+ "##########\n"
+				+ "#.######.#\n"
+				+ "#.#####.##\n", DayEleven.printMap(map));
+
+		DayEleven.applySeatingRulesNew(map);
+		assertEquals("#.LL.LL.L#\n"
+				+ "#LLLLLL.LL\n"
+				+ "L.L.L..L..\n"
+				+ "LLLL.LL.LL\n"
+				+ "L.LL.LL.LL\n"
+				+ "L.LLLLL.LL\n"
+				+ "..L.L.....\n"
+				+ "LLLLLLLLL#\n"
+				+ "#.LLLLLL.L\n"
+				+ "#.LLLLL.L#\n", DayEleven.printMap(map));
+		
+		DayEleven.applySeatingRulesNew(map);
+		assertEquals("#.L#.##.L#\n"
+				+ "#L#####.LL\n"
+				+ "L.#.#..#..\n"
+				+ "##L#.##.##\n"
+				+ "#.##.#L.##\n"
+				+ "#.#####.#L\n"
+				+ "..#.#.....\n"
+				+ "LLL####LL#\n"
+				+ "#.L#####.L\n"
+				+ "#.L####.L#\n", DayEleven.printMap(map));
+		
+		DayEleven.applySeatingRulesNew(map);
+		assertEquals("#.L#.L#.L#\n"
+				   + "#LLLLLL.LL\n"
+				   + "L.L.L..#..\n"
+				   + "##LL.LL.L#\n"
+				   + "L.LL.LL.L#\n"
+				   + "#.LLLLL.LL\n"
+				   + "..L.L.....\n"
+				   + "LLLLLLLLL#\n"
+				   + "#.LLLLL#.L\n"
+				   + "#.L#LL#.L#\n", DayEleven.printMap(map));
+		
+		DayEleven.applySeatingRulesNew(map);
+		assertEquals("#.L#.L#.L#\n"
+				+ "#LLLLLL.LL\n"
+				+ "L.L.L..#..\n"
+				+ "##L#.#L.L#\n"
+				+ "L.L#.#L.L#\n"
+				+ "#.L####.LL\n"
+				+ "..#.#.....\n"
+				+ "LLL###LLL#\n"
+				+ "#.LLLLL#.L\n"
+				+ "#.L#LL#.L#\n", DayEleven.printMap(map));
+		
+		assertEquals(31, DayEleven.countOccoupied(map));
+
+	}
+
 }
