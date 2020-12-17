@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Solves the "Seating System"-Riddle of December 11th 2020.
+ * Solves the "Ship-navigation"-Riddle of December 12th 2020.
  * https://adventofcode.com/2020
  * 
  * @author henry
