@@ -787,9 +787,11 @@ public class DayTwelve {
 			
 	static Step[] steps = load(INPUT);
 	
-	static int pose = 0;
-	static int posn = 0;
+	static Pos ship = new Pos();
+	static Pos wayPoint = new Pos(10, 1);
+	
 	static DIR dir = DIR.E;
+	
 	
 	static Step[] load(String pInput) {
 		String[] n = pInput.split("\n");
@@ -836,10 +838,10 @@ public class DayTwelve {
 		case W:
 		case S:
 		case N:
-			go(s.action.toDir(), s.amount);
+			go(ship, s.action.toDir(), s.amount);
 			break;
 		case F:
-			go(dir, s.amount);
+			go(ship, dir, s.amount);
 			break;
 		case R: 
 			dir = DIR.fromDegrees(dir, s.amount);
@@ -851,21 +853,71 @@ public class DayTwelve {
 		
 	}
 
+	static void stepNew(Step s) {
+		switch (s.action) {
+		case E:
+		case W:
+		case S:
+		case N:
+			go(wayPoint, s.action.toDir(), s.amount);
+			break;
+		case F:
+			go(ship, wayPoint, s.amount);
+			break;
+		case R: 
+			turn(wayPoint, s.amount);
+			break;
+		case L:
+			turn(wayPoint, -s.amount);
+			break;
+		}
+		
+	}
 
-	private static void go(DIR pDir, int pAmount) {
+
+	private static void go(Pos pPos, DIR pDir, int pAmount) {
 		switch (pDir) {
 		case E:
-			pose += pAmount;
+			pPos.pose += pAmount;
 			break;
 		case W:
-			pose -= pAmount;
+			pPos.pose -= pAmount;
 			break;
 		case S:
-			posn -= pAmount;
+			pPos.posn -= pAmount;
 			break;
 		case N:
-			posn += pAmount;
+			pPos.posn += pAmount;
 			break;
+		}
+	}
+	
+	private static void go(Pos pPos, Pos pTarget, int pAmount) {
+		pPos.pose += pAmount * pTarget.pose;
+		pPos.posn += pAmount * pTarget.posn;
+	}
+	
+	private static void turn(Pos pTarget, int pAmount) {
+		Pos p = pTarget.copy();
+		int q = ((pAmount + 360) / 90) % 4;
+		switch (q) {
+		case -1: 
+		case 3: 
+			pTarget.pose = -p.posn;
+			pTarget.posn = p.pose;
+			break;
+		case 1: 
+		case -3: 
+			pTarget.pose = p.posn;
+			pTarget.posn = -p.pose;
+			break;
+		case -2: 
+		case 2: 
+			pTarget.pose = -p.pose;
+			pTarget.posn = -p.posn;
+			break;
+		default:
+			throw new RuntimeException("invalid amount: " + pAmount);
 		}
 	}
 	
@@ -874,7 +926,13 @@ public class DayTwelve {
 		
 		go(steps);
 		
-		logger.debug("position north: {} east: {} manhattan dist: {}", posn, pose, Math.abs(posn) + Math.abs(pose));
+		logger.debug("position north: {} east: {} manhattan dist: {}", ship.posn, ship.pose, Math.abs(ship.posn) + Math.abs(ship.pose));
+		
+		ship = new Pos();
+		
+		goNew(steps);
+		
+		logger.debug("position north: {} east: {} manhattan dist: {}", ship.posn, ship.pose, Math.abs(ship.posn) + Math.abs(ship.pose));
 		
 		
 		
@@ -887,9 +945,31 @@ public class DayTwelve {
 		}
 	}
 	
+	static void goNew(Step[] pSteps) {
+		for (Step s : pSteps) {
+			stepNew(s);
+		}
+	}
+	
 	static class Step {
 		ACTION action;
 		int amount;
+	}
+	
+	static class Pos {
+		int pose;
+		int posn;
+		
+		Pos() {
+		}
+		Pos(int e, int n) {
+			pose = e;
+			posn = n;
+		}
+		
+		Pos copy() {
+			return new Pos(pose, posn);
+		}
 	}
 
 }
