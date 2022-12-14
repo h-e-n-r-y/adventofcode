@@ -1,4 +1,4 @@
-package de.henry.adventofcode;
+package de.henry.adventofcode.y2020;
 
 /**
  * Solves the "Count-Trees-On-My-Way"-Riddle of December 3rd 2020. 

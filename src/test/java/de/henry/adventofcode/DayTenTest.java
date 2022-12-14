@@ -2,6 +2,7 @@ package de.henry.adventofcode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.henry.adventofcode.y2020.DayTen;
 import org.junit.jupiter.api.Test;
 
 class DayTenTest {

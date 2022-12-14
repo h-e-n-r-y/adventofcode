@@ -1,4 +1,4 @@
-package de.henry.adventofcode;
+package de.henry.adventofcode.y2020;
 
 
 import java.util.Arrays;

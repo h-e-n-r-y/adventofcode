@@ -1,4 +1,4 @@
-package de.henry.adventofcode;
+package de.henry.adventofcode.y2020;
 
 /**
  * Solves the "Valid-Passwords"-Riddle of December 2nd 2020. 

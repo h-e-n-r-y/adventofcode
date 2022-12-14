@@ -2,12 +2,13 @@ package de.henry.adventofcode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.henry.adventofcode.y2020.DayTwelve;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.henry.adventofcode.DayTwelve.Step;
-import de.henry.adventofcode.DayTwelve.DIR;
-import de.henry.adventofcode.DayTwelve.Pos;
+import de.henry.adventofcode.y2020.DayTwelve.Step;
+import de.henry.adventofcode.y2020.DayTwelve.DIR;
+import de.henry.adventofcode.y2020.DayTwelve.Pos;
 
 class DayTwelveTest {
 

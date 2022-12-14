@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import de.henry.adventofcode.y2020.DaySeven;
 import org.junit.jupiter.api.Test;
 
 class DaySevenTest {

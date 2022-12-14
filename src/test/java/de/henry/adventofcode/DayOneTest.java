@@ -1,5 +1,6 @@
 package de.henry.adventofcode;
 
+import de.henry.adventofcode.y2020.DayOne;
 import org.junit.jupiter.api.Test;
 
 //import static org.junit.jupiter.api.Assertions.assertEquals;

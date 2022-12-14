@@ -1,4 +1,4 @@
-package de.henry.adventofcode;
+package de.henry.adventofcode.y2020;
 
 /**
  * Solves the "infinite-loop-code"-Riddle of December 8th 2020.

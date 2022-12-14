@@ -2,6 +2,7 @@ package de.henry.adventofcode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.henry.adventofcode.y2020.DayFive;
 import org.junit.jupiter.api.Test;
 
 class DayFiveTest {

@@ -2,6 +2,7 @@ package de.henry.adventofcode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.henry.adventofcode.y2020.DayEleven;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
