@@ -3,8 +3,8 @@ package de.henry.adventofcode.y2022;
 public class Day02 {
 
     public static final int LOOSE = 0;
-    public static final int DRAW = 3;
-    public static final int WIN = 6;
+    public static final int DRAW = 1;
+    public static final int WIN = 2;
 
     public static final int ROCK = 1;
     public static final int PAPER = 2;
@@ -12,18 +12,19 @@ public class Day02 {
 
 
     public static void main(String[] args) {
-        System.out.println("Score: " + calulateScore(INPUT));
+        System.out.println("Score: " + calulateScore(INPUT, false));
+        System.out.println("Score (Part 2): " + calulateScore(INPUT, true));
     }
 
-    protected static int calulateScore(String input) {
+    protected static int calulateScore(String input, boolean isPartTwo) {
         int score = 0;
         for (String l : input.split("\n")) {
             char you = l.charAt(0);
             char me = l.charAt(2);
 
-            int meVal = me - 'X' + 1;
             int youVal = you - 'A' + 1;
-            int curScore = calcSingleScore(youVal, meVal);
+            int meVal = isPartTwo ? (calcMove(youVal, me - 'X')) : (me - 'X' + 1);
+            int curScore = 3 * calcSingleScore(youVal, meVal);
             score += curScore + meVal;
         }
         return score;
@@ -43,6 +44,21 @@ public class Day02 {
             return meVal == ROCK ? WIN : LOOSE;
         }
         return DRAW;
+    }
+    private static int calcMove(int youVal, int result) {
+        if (result == DRAW) {
+            return youVal;
+        }
+        if (youVal == PAPER) {
+            return result == WIN ? SCISSORS : ROCK;
+        }
+        if (youVal == ROCK) {
+            return result == WIN ? PAPER : SCISSORS;
+        }
+        if (youVal == SCISSORS) {
+            return result == WIN ? ROCK : PAPER;
+        }
+        return youVal;
     }
 
     private static final String INPUT = "C Y\n" +

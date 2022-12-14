@@ -9,7 +9,11 @@ class Day02Test {
     public void test() {
         assertEquals(15, Day02.calulateScore("A Y\n" +
                 "B X\n" +
-                "C Z"),
+                "C Z", false),
+                "wrong score");
+        assertEquals(12, Day02.calulateScore("A Y\n" +
+                        "B X\n" +
+                        "C Z", true),
                 "wrong score");
     }
 }
