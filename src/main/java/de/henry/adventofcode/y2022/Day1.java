@@ -1,9 +1,14 @@
 package de.henry.adventofcode.y2022;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 public class Day1 {
 
     public static void main(String[] args) {
-        System.out.println("max calories: " + calcMaxCalories(INPUT));
+        System.out.println("Part 1: max calories: " + calcMaxCalories(INPUT));
+        System.out.println("Part 2: max calories (Top 3): " + calcMaxCaloriesTop3(INPUT));
     }
 
     protected static long calcMaxCalories(String input) {
@@ -21,6 +26,23 @@ public class Day1 {
         }
         return curMax;
     }
+
+    protected static long calcMaxCaloriesTop3(String input) {
+        List<Long> calories = new ArrayList<>();
+        long curSum = 0;
+        for (String l : input.split("\\n")) {
+            if ("".equals(l)) {
+                calories.add(curSum);
+                curSum = 0;
+            } else {
+                curSum += Long.parseLong(l);
+            }
+        }
+        // sort reverse
+        calories.sort(Comparator.reverseOrder());
+        return calories.get(0) + calories.get(1) + calories.get(2);
+    }
+
 
     static final String INPUT = "3120\n" +
             "4127\n" +
