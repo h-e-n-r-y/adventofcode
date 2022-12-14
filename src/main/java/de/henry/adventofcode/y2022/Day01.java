@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class Day1 {
+public class Day01 {
 
     public static void main(String[] args) {
         System.out.println("Part 1: max calories: " + calcMaxCalories(INPUT));
