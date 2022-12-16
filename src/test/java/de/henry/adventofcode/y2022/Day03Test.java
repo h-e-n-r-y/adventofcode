@@ -13,5 +13,12 @@ class Day03Test {
                 "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\n" +
                 "ttgJtRGJQctTZtZT\n" +
                 "CrZsJsPPZsGzwwsLwLmpwMDw"), "wrong prio sum");
+        assertEquals(70L, Day03.calcPrioSumForGroupOf3("vJrwpWtwJgWrhcsFMMfFFhFp\n" +
+                "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\n" +
+                "PmmdzqPrVvPwwTWBwg\n" +
+                "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\n" +
+                "ttgJtRGJQctTZtZT\n" +
+                "CrZsJsPPZsGzwwsLwLmpwMDw"), "wrong group prio sum");
+
     }
 }

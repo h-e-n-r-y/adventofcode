@@ -4,12 +4,22 @@ public class Day03 {
 
     public static void main(String[] args) {
         System.out.println("sum of priorities: " + calcPrioSum(INPUT));
+        System.out.println("sum of group priorities: " + calcPrioSumForGroupOf3(INPUT));
     }
 
     protected static long calcPrioSum(String pInput) {
         long sum = 0;
         for (String line : pInput.split("\n")) {
             char commonItem = findCommonItem(line.substring(0,line.length()/2), line.substring(line.length()/2));
+            sum += getPrio(commonItem);
+        }
+        return sum;
+    }
+    protected static long calcPrioSumForGroupOf3(String pInput) {
+        long sum = 0;
+        String[] lines = pInput.split("\n");
+        for (int i=0; i<lines.length / 3; i++) {
+            char commonItem = findCommonItem(lines[i*3], lines[i*3+1], lines[i*3+2]);
             sum += getPrio(commonItem);
         }
         return sum;
@@ -23,6 +33,16 @@ public class Day03 {
             }
         }
         throw new RuntimeException("no common item found in rucksack " + pCompartment1 + ":" + pCompartment2);
+    }
+
+    private static char findCommonItem(String pRucksack1, String pRucksack2, String pRucksack3) {
+        for (int i=0; i<pRucksack1.length(); i++) {
+            String item = "" + pRucksack1.charAt(i);
+            if (pRucksack2.contains(item) && pRucksack3.contains(item)) {
+                return pRucksack1.charAt(i);
+            }
+        }
+        throw new RuntimeException("no common item found in 3 rucksacks " + pRucksack1 + ":" + pRucksack2 + ":" + pRucksack3);
     }
 
     private static int getPrio(char pItem) {
