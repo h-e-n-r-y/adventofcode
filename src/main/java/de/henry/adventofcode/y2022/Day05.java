@@ -8,7 +8,16 @@ public class Day05 {
 
     public static void main(String[] args) {
         loadStacks(STACKS);
-        processMoves(MOVES);
+        processMoves(MOVES, false);
+        printResult();
+
+        loadStacks(STACKS);
+        processMoves(MOVES, true);
+        printResult();
+
+    }
+
+    private static void printResult() {
         System.out.println("Result:");
         for (Stack<Character> s : stacks) {
             System.out.print(s.peek());
@@ -25,7 +34,7 @@ public class Day05 {
         for (int i = lines.length - 1; i>=0; i--) {
             for (int stack=0; stack < stacks.length; stack++) {
                 String line = lines[i];
-                Character crate = line.charAt(stack*4 + 1);
+                char crate = line.charAt(stack*4 + 1);
                 if (crate != ' ') {
                     stacks[stack].push(crate);
                 }
@@ -35,7 +44,7 @@ public class Day05 {
         printStacks();
     }
 
-    private static void processMoves(String pMoves) {
+    private static void processMoves(String pMoves, boolean newCrane) {
         for (String move : pMoves.split("\n")) {
             // move 2 from 8 to 2
             String[] m = move.split(" ");
@@ -43,10 +52,24 @@ public class Day05 {
             int from = Integer.parseInt(m[3]) - 1;
             int to = Integer.parseInt(m[5]) - 1;
             System.out.print("move " + repeat + "x from " + from + " to " + to + ":");
-            for (int i = 0; i < repeat; i++) {
-                Character crate = stacks[from].pop();
-                System.out.print(" " + crate);
-                stacks[to].push(crate);
+            if (newCrane) {
+                Stack<Character> s = new Stack<>();
+                for (int i = 0; i < repeat; i++) {
+                    Character crate = stacks[from].pop();
+                    //System.out.print(" " + crate);
+                    s.push(crate);
+                }
+                for (int i = 0; i < repeat; i++) {
+                    Character crate = s.pop();
+                    System.out.print(" " + crate);
+                    stacks[to].push(crate);
+                }
+            } else {
+                for (int i = 0; i < repeat; i++) {
+                    Character crate = stacks[from].pop();
+                    System.out.print(" " + crate);
+                    stacks[to].push(crate);
+                }
             }
             System.out.println();
         }
