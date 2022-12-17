@@ -8,6 +8,11 @@ public class Day05 {
 
     public static void main(String[] args) {
         loadStacks(STACKS);
+        processMoves(MOVES);
+        System.out.println("Result:");
+        for (Stack<Character> s : stacks) {
+            System.out.print(s.peek());
+        }
     }
 
     private static void loadStacks(String pStacks) {
@@ -21,9 +26,31 @@ public class Day05 {
             for (int stack=0; stack < stacks.length; stack++) {
                 String line = lines[i];
                 Character crate = line.charAt(stack*4 + 1);
-                stacks[stack].push(crate);
+                if (crate != ' ') {
+                    stacks[stack].push(crate);
+                }
             }
         }
+        System.out.println("BEFORE\n======");
+        printStacks();
+    }
+
+    private static void processMoves(String pMoves) {
+        for (String move : pMoves.split("\n")) {
+            // move 2 from 8 to 2
+            String[] m = move.split(" ");
+            int repeat = Integer.parseInt(m[1]);
+            int from = Integer.parseInt(m[3]) - 1;
+            int to = Integer.parseInt(m[5]) - 1;
+            System.out.print("move " + repeat + "x from " + from + " to " + to + ":");
+            for (int i = 0; i < repeat; i++) {
+                Character crate = stacks[from].pop();
+                System.out.print(" " + crate);
+                stacks[to].push(crate);
+            }
+            System.out.println();
+        }
+        System.out.println("\nAFTER\n=====");
         printStacks();
     }
 
