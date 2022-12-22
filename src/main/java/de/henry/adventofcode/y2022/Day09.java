@@ -98,7 +98,7 @@ public class Day09 {
         }
     }
 
-    private static String INPUT =
+    private static final String INPUT =
             "R 2\n" +
                     "D 2\n" +
                     "U 1\n" +
