@@ -5,44 +5,65 @@ import java.util.Set;
 
 public class Day09 {
 
-    static final Set<Point> positions = new HashSet<>();
-
-    static Point H = new Point(0,0);
-    static Point T = new Point(0,0);
+    static final Set<Knot> positions = new HashSet<>();
+    static int maxX = 0;
+    static int maxY = 0;
+    static int minX = 0;
+    static int minY = 0;
 
 
     public static void main(String[] args) {
-        System.out.println("#positions visited: " + process(INPUT));
+        System.out.println("#positions visited (rope length 1): " + process(INPUT, 1));
+        System.out.println("#positions visited (rope length 10): " + process(INPUT, 10));
     }
-    static int process(String pInput) {
+    static int process(String pInput, int pLength) {
         reset();
+        Knot H = new Knot(0, 0, pLength-1);
         for (String instruction : pInput.split("\n")) {
-            H.move(instruction, T);
+            H.move(instruction);
         }
+        drawMap();
         return positions.size();
+    }
+
+    private static void drawMap() {
+        for (int y=maxY; y >= minY; y--) {
+            for (int x=minX; x <= maxX; x++) {
+                System.out.print(positions.contains(new Knot(x,y,0)) ? '#' : '.');
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
     private static void reset() {
         positions.clear();
-        H = new Point(0,0);
-        T = new Point(0,0);
+        maxX = 0;
+        maxY = 0;
+
     }
 
-    static class Point {
+    static class Knot {
         int x;
         int y;
 
-        Point(int pX, int pY) {
+        Knot follower;
+
+        Knot(int pX, int pY, int pRemainingLength) {
             x = pX;
             y = pY;
+            if (pRemainingLength > 0) {
+                follower = new Knot(pX, pY, pRemainingLength - 1);
+            }
         }
 
-        Point(Point p) {
+        Knot(Knot p) {
             x = p.x;
             y = p.y;
+            // do not copy follower!
         }
 
-        void move(String pInstruction, Point pTail) {
+        void move(String pInstruction) {
             char dir = pInstruction.charAt(0);
             int steps = Integer.parseInt(pInstruction.substring(2));
             for (int i = 0; i < steps; i++) {
@@ -62,10 +83,12 @@ public class Day09 {
                     default:
                         throw new RuntimeException("illegal instruction: " + pInstruction);
                 }
-                pTail.follow(this);
+                if (follower != null) {
+                    follower.follow(this);
+                }
             }
         }
-        void follow(Point pHead) {
+        void follow(Knot pHead) {
             if (pHead.x - x > 1) {
                 x = pHead.x - 1;
                 y = pHead.y;
@@ -79,15 +102,22 @@ public class Day09 {
                 y = pHead.y + 1;
                 x = pHead.x;
             }
-
-            // mark new Position
-            positions.add(new Point(this));
+            if (follower != null) {
+                follower.follow(this);
+            } else {
+                // mark new Position of the tail
+                positions.add(new Knot(this));
+                if (x > maxX) maxX = x;
+                if (y > maxY) maxY = y;
+                if (x < minX) minX = x;
+                if (y < minY) minY = y;
+            }
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Point) {
-                return x == ((Point) obj).x && y == ((Point) obj).y;
+            if (obj instanceof Knot) {
+                return x == ((Knot) obj).x && y == ((Knot) obj).y;
             }
             return false;
         }
