@@ -1,23 +1,45 @@
 package de.henry.adventofcode.y2022;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import javax.script.*;
+import java.util.*;
 
 public class Day11 {
 
-    public static void main(String[] args) {
-        List<Monkey> monkeys = readMonkeyData(INPUT);
+    public static void main(String[] args) throws ScriptException {
+        List<Monkey> monkeys = readMonkeyData(INPUT, true);
+        for (int round = 1; round <= 20; round++) {
+            round(monkeys);
+        }
+        Collections.sort(monkeys, (m1, m2) -> m2.inspectionCount.compareTo(m1.inspectionCount));
+        dump(20, monkeys);
+        System.out.println("Level of monkey business: " + (monkeys.get(0).inspectionCount * monkeys.get(1).inspectionCount));
+    }
+
+    protected static void round(List<Monkey> monkeys) throws ScriptException {
+        for (Monkey monkey : monkeys) {
+                monkey.turn(monkeys);
+        }
     }
 
     static ScriptEngine calculator = new ScriptEngineManager().getEngineByName("nashorn");
 
+    public static void dump(int round, List<Monkey> monkeys) {
+        System.out.println("After round: " + round);
+        for (Monkey m : monkeys) {
+            System.out.println(m.name + ": " + m.inspectionCount + "  " + m.items);
+        }
+        System.out.println();
+
+    }
+
     static class Monkey {
+
+        Monkey(boolean divideByThree) {
+            divideLevelBythree = divideByThree;
+        }
+        boolean divideLevelBythree;
         String name;
-        Queue<Integer> items = new LinkedList<>();
+        Queue<Long> items = new LinkedList<>();
 
         String worryLevelCode;
         int divisibleBy;
@@ -25,14 +47,42 @@ public class Day11 {
         int trueMonkeyNr;
         int falseMonkeyNr;
 
+        Long inspectionCount = 0L;
+
+        public void turn(List<Monkey> monkeys) throws ScriptException {
+
+            Long worryLevel = items.poll();
+            while (worryLevel != null) {
+                if (divideLevelBythree) {
+                    Bindings bindings = calculator.getBindings(ScriptContext.ENGINE_SCOPE);
+                    bindings.put("old", new Double(worryLevel));
+                    bindings.put("newLevel", new Double(worryLevel));
+                    String script = "var old;\nvar newLevel = " + worryLevelCode;
+                    calculator.eval(script);
+                    Double result = (Double) bindings.get("newLevel");
+                    long wl = result.longValue();
+                    wl /= 3;
+                    if (wl % divisibleBy == 0) {
+                        monkeys.get(trueMonkeyNr).items.add(wl);
+                        //System.out.println("\t " + this.name + ": " + wl + " to " + monkeys.get(trueMonkeyNr).name);
+                    } else {
+                        monkeys.get(falseMonkeyNr).items.add(wl);
+                        //System.out.println("\t " + this.name + ": " + wl + " to " + monkeys.get(falseMonkeyNr).name);
+                    }
+                }
+                inspectionCount++;
+
+                worryLevel = items.poll();
+            }
+        }
     }
 
-    static List<Monkey> readMonkeyData(String pInput) {
+    static List<Monkey> readMonkeyData(String pInput, boolean divideLevelByThree) {
         List<Monkey> monkeys = new ArrayList<>();
-        Monkey cur = new Monkey();
+        Monkey cur = new Monkey(divideLevelByThree);
         for (String l : pInput.split("\n")) {
             if (l.isEmpty()) {
-                cur = new Monkey();
+                cur = new Monkey(divideLevelByThree);
                 continue;
             }
             if (l.startsWith("Monkey ")) {
@@ -42,7 +92,7 @@ public class Day11 {
             }
             if (l.startsWith("  Starting items: ")) {
                 for (String s : l.substring(18).split(", ")) {
-                    cur.items.add(Integer.parseInt(s));
+                    cur.items.add(Long.parseLong(s));
                 }
                 continue;
             }
